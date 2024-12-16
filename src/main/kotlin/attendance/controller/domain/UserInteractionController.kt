@@ -2,11 +2,9 @@ package attendance.controller.domain
 
 import attendance.model.Student
 import attendance.util.getDay
-import attendance.util.getToday
 import attendance.util.standardFormatter
 import attendance.view.InputView
 import attendance.view.OutputView
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class UserInteractionController(

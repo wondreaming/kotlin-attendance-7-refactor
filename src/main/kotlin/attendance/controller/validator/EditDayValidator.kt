@@ -38,7 +38,7 @@ class EditDayValidator {
     }
 
     private fun checkAttendanceDay(day: String, student: Student) {
-        require(student.checkAttendanceDay(day)) { EditDayErrorType.WRONG }
+//        require(student.checkAttendanceDay(day)) { EditDayErrorType.WRONG }
     }
 
 }

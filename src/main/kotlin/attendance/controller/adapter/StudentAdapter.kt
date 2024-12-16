@@ -2,6 +2,7 @@ package attendance.controller.adapter
 
 import attendance.model.Student
 import attendance.util.getLocalDateTime
+import attendance.util.getStudent
 import java.io.File
 import java.nio.file.Files
 
@@ -14,12 +15,12 @@ class StudentAdapter {
         for (record in records) {
             val (nickname, datetime) = record.split(",")
             if (nickname !in nicknames) {
-                nicknames.add(nickname)
                 val student = Student(nickname)
+                nicknames.add(nickname)
                 students.add(student)
             }
-            val student = students.find { it.name == nickname }
-            student!!.addAttendance(getLocalDateTime(datetime))
+            val student = getStudent(students, nickname)
+            student?.addAttendance(getLocalDateTime(datetime))
         }
         return students
     }

@@ -4,11 +4,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun getToday(): LocalDate {
-    val today = LocalDate.now()
-    return today
-}
-
 fun getDay(): Int {
     val localDate = LocalDate.of(2024, 12, 13)
     val startOfDay = localDate.atStartOfDay()
@@ -18,7 +13,7 @@ fun getDay(): Int {
 }
 
 fun getLocalDateTime(time: String): LocalDateTime {
-    val dateTimeString = "%s:00".format(time)
+    val dateTimeString = "${time}:00"
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     return LocalDateTime.parse(dateTimeString, formatter)
 }
