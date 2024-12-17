@@ -11,9 +11,9 @@ enum class SchoolTime(
     val absenceTime: LocalTime,
     val endTime: LocalTime,
 ) {
-    MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0), LocalTime.of(13, 5), LocalTime.of(13, 30), LocalTime.of(18, 0)),
-    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(10, 5), LocalTime.of(10, 30), LocalTime.of(18, 0)),
-    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 0), LocalTime.of(10, 5), LocalTime.of(10, 30), LocalTime.of(18, 0)),
-    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(10, 5), LocalTime.of(10, 30), LocalTime.of(18, 0)),
-    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 0), LocalTime.of(10, 5), LocalTime.of(10, 30), LocalTime.of(18, 0));
+    MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 1), LocalTime.of(13, 6), LocalTime.of(13, 30), LocalTime.of(18, 0)),
+    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(10, 1), LocalTime.of(10, 6), LocalTime.of(10, 30), LocalTime.of(18, 0)),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 1), LocalTime.of(10, 6), LocalTime.of(10, 30), LocalTime.of(18, 0)),
+    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 1), LocalTime.of(10, 6), LocalTime.of(10, 30), LocalTime.of(18, 0)),
+    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 1), LocalTime.of(10, 6), LocalTime.of(10, 30), LocalTime.of(18, 0));
 }

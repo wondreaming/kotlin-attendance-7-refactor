@@ -6,6 +6,8 @@ import attendance.controller.validator.NickNameValidator
 import attendance.controller.validator.StepValidator
 import attendance.model.Student
 import attendance.util.changeLocalDateTime
+import camp.nextstep.edu.missionutils.DateTimes
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class ProgramController(
@@ -37,11 +39,12 @@ class ProgramController(
 
     private fun processOne(students: List<Student>) {
         val nickName = getNickname(students)
-        val attendanceTime = getAttendanceTime()
+        val time = getAttendanceTime()
         val student = students.find { it.name == nickName }
-//        student!!.addAttendance(attendanceTime)
-        val status = checkStatus(attendanceTime)
-        userInteractionController.handleAttendTime(attendanceTime, status)
+        student?.addAttendance(time)
+        if (student != null) {
+            userInteractionController.handleAttendTime(time, student)
+        }
     }
 
     private fun processTwo(students: List<Student>) {
@@ -52,10 +55,13 @@ class ProgramController(
         editDayValidator(day, student!!)
         val time = userInteractionController.handleEditTime()
         attendanceValidator(time)
-//        val (removeTime, changeTime) = student.changeRecord(day, time)
-        val status1 = "지각"
-        val status2 = "출석"
-//        userInteractionController.handleEditAttendance(removeTime, status1, changeTime, status2)
+
+        val changeTime = changeLocalDateTime(day, time)
+        val removeTime = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.time
+        val status1 = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.status
+        student.addAttendance(changeTime)
+        val status2 = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.status
+        userInteractionController.handleEditAttendance(removeTime, status1, changeTime, status2)
     }
 
 
@@ -73,17 +79,16 @@ class ProgramController(
         return studentAttendanceTime
     }
 
-    private fun checkStatus(attendanceTime: LocalDateTime): String {
-        return "출석"
-    }
-
     private fun processThree(students: List<Student>) {
         val nickname = userInteractionController.handleNickName()
+        val time = DateTimes.now().dayOfMonth - 1
+        val date = LocalDate.of(2024, 12, time)
         nickNameValidator(nickname, students)
         val student = students.find { it.name == nickname }
-        for (record in student!!.attendance) {
-//            val status = checkStatus(record)
-//            userInteractionController.handleAttendTime(record, status)
+        for (record in student!!.attendanceRegister.getAttendanceFrom1ToDate(date)) {
+            if (!record.isHoliday){
+                userInteractionController.handleAttendTime(record)
+            }
         }
         userInteractionController.handleStatus(student)
     }

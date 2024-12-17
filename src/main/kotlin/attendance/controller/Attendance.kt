@@ -3,19 +3,18 @@ package attendance.controller
 import attendance.controller.adapter.StudentAdapter
 import attendance.controller.domain.ProgramController
 import attendance.controller.validator.*
-import attendance.model.Month
-import attendance.model.SchoolTime
+import attendance.model.AttendanceRegister
 import camp.nextstep.edu.missionutils.DateTimes
 
 class Attendance(
     private val studentAdapter: StudentAdapter = StudentAdapter(),
-    private val programController: ProgramController = ProgramController()
+    private val programController: ProgramController = ProgramController(),
+    private val attendanceRegister: AttendanceRegister = AttendanceRegister(),
 ) {
     fun run() {
         val students = studentAdapter.loadStudent()
-        println(students.joinToString("\n"))
-        checkToday()
         try {
+            checkToday()
             programController(students)
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException(e.message)
@@ -23,7 +22,7 @@ class Attendance(
     }
 
     private fun checkToday() {
-        val today = DateTimes.now().dayOfMonth
-        require(today !in Month.DECEMBER.holiday) { AttendanceTimeErrorType.CHECK_ATTENDANCE }
+        val today = DateTimes.now().toLocalDate()
+        require(!attendanceRegister.isHoliday(today)) { AttendanceTimeErrorType.CHECK_ATTENDANCE }
     }
 }

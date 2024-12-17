@@ -1,11 +1,15 @@
 package attendance.controller.domain
 
+import attendance.model.Attendance
+import attendance.model.Status
 import attendance.model.Student
 import attendance.util.getDay
 import attendance.util.standardFormatter
+import attendance.util.standardTimeFormatter
 import attendance.view.InputView
 import attendance.view.OutputView
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class UserInteractionController(
     private val inputView: InputView = InputView(),
@@ -43,15 +47,13 @@ class UserInteractionController(
     }
 
     fun handleEditAttendance(
-        beforeTime: LocalDateTime,
-        beforeStatus: String,
+        beforeTime: LocalTime?,
+        beforeStatus: String?,
         AfterTime: LocalDateTime,
-        AfterStatus: String
+        AfterStatus: String?,
     ) {
         outputView.showMsg("언제로 변경하겠습니까?")
-        val bTime = beforeTime.standardFormatter()
-        val aTime = AfterTime.standardFormatter()
-        outputView.showMsg("${bTime} (${beforeStatus}) -> ${aTime} (${AfterStatus}) 수정 완료!")
+        outputView.showMsg("${AfterTime.standardFormatter()} ${beforeTime!!.standardTimeFormatter()} (${beforeStatus}) -> ${AfterTime.standardTimeFormatter()} (${AfterStatus}) 수정 완료!")
     }
 
     fun handleAttendanceTime(): String {
@@ -59,9 +61,20 @@ class UserInteractionController(
         return inputView.getInput()
     }
 
-    fun handleAttendTime(time: LocalDateTime, status: String) {
-        val checkTime = time.standardFormatter()
-        outputView.showMsg("${checkTime} (${status})")
+    fun handleAttendTime(time: LocalDateTime, student: Student) {
+        val status = student.attendanceRegister.attendanceList.find { it.day == time.toLocalDate() }?.status!!
+        val checkDay = student.attendanceRegister.attendanceList.find { it.day == time.toLocalDate() }
+        val formattedDate = checkDay?.day!!.standardFormatter()
+        val formattedTime = checkDay?.time.standardFormatter()
+        outputView.showMsg("$formattedDate $formattedTime ($status)")
+    }
+
+    fun handleAttendTime(record: Attendance) {
+        val status = record.status
+        val formattedDate = record.day.standardFormatter()
+        val formattedTime = record.time.standardFormatter()
+        if (record.time == null) outputView.showMsg("$formattedDate --:-- ($status)")
+            else outputView.showMsg("$formattedDate $formattedTime ($status)")
     }
 
     fun handleStatus(student: Student) {

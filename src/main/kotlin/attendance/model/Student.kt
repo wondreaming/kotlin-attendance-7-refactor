@@ -1,37 +1,49 @@
 package attendance.model
 
+import camp.nextstep.edu.missionutils.DateTimes
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Student(
     val name: String,
-    val attendance: MutableMap<LocalDate, AttendanceRegister> = mutableMapOf(),
+    val attendanceRegister: AttendanceRegister = AttendanceRegister(),
     var attendanceCount: Int = 0,
     var lateCount: Int = 0,
     var absenceCount: Int = 0,
     var status: Status = Status.NORMAL
 ) {
     fun addAttendance(time: LocalDateTime) {
-        val attendanceRegister = AttendanceRegister(time)
-        attendance.put(time.toLocalDate(), attendanceRegister)
-        calculateAttendanceCount(attendanceRegister)
-        status = calculateStatus()
+        val date = time.toLocalDate()
+        val attendanceTime = time.toLocalTime()
+        val attendanceStatus = AttendanceStatus(time).attendanceCheck
+        attendanceRegister.updateAttendance(date, attendanceStatus, attendanceTime)
+        calculateAttendanceCount()
+        calculateStatus()
     }
 
-    private fun calculateAttendanceCount(attendanceRegister: AttendanceRegister) {
-        when (attendanceRegister.attendanceCheck) {
-            "출석" -> attendanceCount++
-            "지각" -> lateCount++
-            "결석" -> absenceCount++
+    private fun calculateAttendanceCount() {
+        attendanceCount = 0
+        lateCount = 0
+        absenceCount = 0
+        val time = DateTimes.now().dayOfMonth - 1
+        val date = LocalDate.of(2024, 12, time)
+
+        val attendances = attendanceRegister.getAttendanceFrom1ToDate(date)
+        for (attendance in attendances) {
+            when (attendance.status) {
+                "출석" -> attendanceCount++
+                "지각" -> lateCount++
+                "결석" -> absenceCount++
+            }
         }
     }
 
-    private fun calculateStatus(): Status {
+    private fun calculateStatus() {
         val addAbsenceCount = absenceCount + (lateCount / 3)
-        return when {
-            addAbsenceCount in 0 until 2 -> Status.NORMAL
-            addAbsenceCount in 2 until 3 -> Status.WARNING
-            addAbsenceCount in 3 until 5 -> Status.INTERVIEW
+        status = when (addAbsenceCount) {
+            in 0 until 2 -> Status.NORMAL
+            in 2 until 3 -> Status.WARNING
+            in 3 until 5 -> Status.INTERVIEW
             else -> Status.WEEDING
         }
     }
