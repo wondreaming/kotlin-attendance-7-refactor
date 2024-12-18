@@ -58,9 +58,9 @@ class ProgramController(
 
         val changeTime = changeLocalDateTime(day, time)
         val removeTime = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.time
-        val status1 = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.status
+        val status1 = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.record
         student.addAttendance(changeTime)
-        val status2 = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.status
+        val status2 = student.attendanceRegister.attendanceList.find { it.day == changeTime.toLocalDate() }!!.record
         userInteractionController.handleEditAttendance(removeTime, status1, changeTime, status2)
     }
 

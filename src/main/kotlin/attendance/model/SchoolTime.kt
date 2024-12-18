@@ -7,7 +7,7 @@ import java.time.LocalTime
 enum class SchoolTime(
     val dayOfWeek: DayOfWeek,
     val attendanceTime: LocalTime,
-    val LateTime: LocalTime,
+    val tardinessTime: LocalTime,
     val absenceTime: LocalTime,
     val endTime: LocalTime,
 ) {

@@ -1,6 +1,7 @@
 package attendance.controller.domain
 
 import attendance.model.Attendance
+import attendance.model.AttendanceRecord
 import attendance.model.Status
 import attendance.model.Student
 import attendance.util.getDay
@@ -48,12 +49,12 @@ class UserInteractionController(
 
     fun handleEditAttendance(
         beforeTime: LocalTime?,
-        beforeStatus: String?,
+        beforeStatus: AttendanceRecord?,
         AfterTime: LocalDateTime,
-        AfterStatus: String?,
+        AfterStatus: AttendanceRecord?,
     ) {
         outputView.showMsg("언제로 변경하겠습니까?")
-        outputView.showMsg("${AfterTime.standardFormatter()} ${beforeTime!!.standardTimeFormatter()} (${beforeStatus}) -> ${AfterTime.standardTimeFormatter()} (${AfterStatus}) 수정 완료!")
+        outputView.showMsg("${AfterTime.standardFormatter()} ${beforeTime!!.standardTimeFormatter()} (${beforeStatus?.record}) -> ${AfterTime.standardTimeFormatter()} (${AfterStatus?.record}) 수정 완료!")
     }
 
     fun handleAttendanceTime(): String {
@@ -62,7 +63,7 @@ class UserInteractionController(
     }
 
     fun handleAttendTime(time: LocalDateTime, student: Student) {
-        val status = student.attendanceRegister.attendanceList.find { it.day == time.toLocalDate() }?.status!!
+        val status = student.attendanceRegister.attendanceList.find { it.day == time.toLocalDate() }?.record!!.record
         val checkDay = student.attendanceRegister.attendanceList.find { it.day == time.toLocalDate() }
         val formattedDate = checkDay?.day!!.standardFormatter()
         val formattedTime = checkDay?.time.standardFormatter()
@@ -70,7 +71,7 @@ class UserInteractionController(
     }
 
     fun handleAttendTime(record: Attendance) {
-        val status = record.status
+        val status = record.record.record
         val formattedDate = record.day.standardFormatter()
         val formattedTime = record.time.standardFormatter()
         if (record.time == null) outputView.showMsg("$formattedDate --:-- ($status)")

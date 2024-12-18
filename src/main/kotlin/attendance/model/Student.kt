@@ -13,10 +13,9 @@ data class Student(
     var status: Status = Status.NORMAL
 ) {
     fun addAttendance(time: LocalDateTime) {
-        val date = time.toLocalDate()
+        val attendanceDay = time.toLocalDate()
         val attendanceTime = time.toLocalTime()
-        val attendanceStatus = AttendanceStatus(time).attendanceCheck
-        attendanceRegister.updateAttendance(date, attendanceStatus, attendanceTime)
+        attendanceRegister.updateAttendance(attendanceDay, attendanceTime)
         calculateAttendanceCount()
         calculateStatus()
     }
@@ -25,15 +24,17 @@ data class Student(
         attendanceCount = 0
         lateCount = 0
         absenceCount = 0
-        val time = DateTimes.now().dayOfMonth - 1
-        val date = LocalDate.of(2024, 12, time)
+        val today = DateTimes.now().dayOfMonth - 1
+        val date = LocalDate.of(2024, 12, today)
 
         val attendances = attendanceRegister.getAttendanceFrom1ToDate(date)
         for (attendance in attendances) {
-            when (attendance.status) {
-                "출석" -> attendanceCount++
-                "지각" -> lateCount++
-                "결석" -> absenceCount++
+            if (!attendance.isHoliday) {
+                when (attendance.record) {
+                    AttendanceRecord.ATTENDANCE -> attendanceCount++
+                    AttendanceRecord.TARDINESS -> lateCount++
+                    AttendanceRecord.ABSENCE -> absenceCount++
+                }
             }
         }
     }
