@@ -9,18 +9,14 @@ import java.nio.file.Files
 class StudentAdapter {
     fun loadStudent(): List<Student> {
         val filePath = "src/main/resources/attendances.csv"
-        val nicknames = mutableListOf<String>()
         val students = mutableListOf<Student>()
-        val records = File(filePath).readLines().filterNot { it.startsWith("nickname") }
-        for (record in records) {
-            val (nickname, datetime) = record.split(",")
-            if (nickname !in nicknames) {
-                val student = Student(nickname)
-                nicknames.add(nickname)
-                students.add(student)
+
+        File(filePath).useLines { lines ->
+            lines.drop(1).map { it.split(",") }.forEach { (name, datetime) ->
+                val student = students.find { it.name == name }
+                    ?: Student(name).also { students.add(it) }
+                student.addAttendance(getLocalDateTime(datetime))
             }
-            val student = getStudent(students, nickname)
-            student?.addAttendance(getLocalDateTime(datetime))
         }
         return students
     }

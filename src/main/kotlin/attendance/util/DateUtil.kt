@@ -21,8 +21,6 @@ fun getLocalDateTime(time: String): LocalDateTime {
 
 fun changeLocalDateTime(time: String): LocalDateTime {
     val localDate = LocalDate.of(2024, 12, 13)
-    val startOfDay = localDate.atStartOfDay()
-    val today = startOfDay
     val dateTimeString = "${localDate} %s:00".format(time)
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     return LocalDateTime.parse(dateTimeString, formatter)
