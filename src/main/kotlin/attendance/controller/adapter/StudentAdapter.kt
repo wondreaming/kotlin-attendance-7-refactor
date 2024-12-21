@@ -2,9 +2,8 @@ package attendance.controller.adapter
 
 import attendance.model.Student
 import attendance.util.getLocalDateTime
-import attendance.util.getStudent
 import java.io.File
-import java.nio.file.Files
+
 
 class StudentAdapter {
     fun loadStudent(): List<Student> {

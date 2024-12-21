@@ -38,9 +38,9 @@ class ProgramController(
     }
 
     private fun processOne(students: List<Student>) {
-        val nickName = getNickname(students)
+        val nickname = getNickname(students)
         val time = getAttendanceTime()
-        val student = students.find { it.name == nickName }
+        val student = students.find { it.name == nickname }
         student?.addAttendance(time)
         if (student != null) {
             userInteractionController.handleAttendTime(time, student)
@@ -48,9 +48,8 @@ class ProgramController(
     }
 
     private fun processTwo(students: List<Student>) {
-        val nickname = userInteractionController.handleEditNickName()
+        val nickname = getNickname(students)
         val student = students.find { it.name == nickname }
-        nickNameValidator(nickname, students)
         val day = userInteractionController.handleEditDay()
         editDayValidator(day, student!!)
         val time = userInteractionController.handleEditTime()
@@ -65,20 +64,6 @@ class ProgramController(
     }
 
 
-    private fun getNickname(students: List<Student>): String {
-        val nickname = userInteractionController.handleNickName()
-        nickNameValidator(nickname, students)
-//        nickNameValidator.checkAttendance(nickname, students)
-        return nickname
-    }
-
-    private fun getAttendanceTime(): LocalDateTime {
-        val attendanceTime = userInteractionController.handleAttendanceTime()
-        attendanceValidator(attendanceTime)
-        val studentAttendanceTime = changeLocalDateTime(attendanceTime)
-        return studentAttendanceTime
-    }
-
     private fun processThree(students: List<Student>) {
         val nickname = userInteractionController.handleNickName()
         val time = DateTimes.now().dayOfMonth - 1
@@ -86,7 +71,7 @@ class ProgramController(
         nickNameValidator(nickname, students)
         val student = students.find { it.name == nickname }
         for (record in student!!.attendanceRegister.getAttendanceFrom1ToDate(date)) {
-            if (!record.isHoliday){
+            if (!record.isHoliday) {
                 userInteractionController.handleAttendTime(record)
             }
         }
@@ -99,5 +84,18 @@ class ProgramController(
             if (student.status.status != "정상") dangerStudents.add(student)
         }
         userInteractionController.handleDangerPeople(dangerStudents)
+    }
+
+    private fun getNickname(students: List<Student>): String {
+        val nickname = userInteractionController.handleNickName()
+        nickNameValidator(nickname, students)
+        return nickname
+    }
+
+    private fun getAttendanceTime(): LocalDateTime {
+        val attendanceTime = userInteractionController.handleAttendanceTime()
+        attendanceValidator(attendanceTime)
+        val studentAttendanceTime = changeLocalDateTime(attendanceTime)
+        return studentAttendanceTime
     }
 }
